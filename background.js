@@ -14,7 +14,6 @@ function page(tabs){
 
 //启动函数，用于创建标签（首页）
 function start(){
-	alert("898888");
 	var url = "http://www.gsxt.gov.cn/index.html";
 	chrome.tabs.create({"url" : url},page);
 }
@@ -29,4 +28,5 @@ chrome.tabs.onUpdated.addListener(function(tabId,changeInfo) {
 		}else if (link=="http://www.gsxt.gov.cn/index.html"){
 			alert("start");
 			sendMsg(tabId,"content","","重庆三峡银行");
+		};
 });
