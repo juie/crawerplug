@@ -1,3 +1,5 @@
+var detail_link
+
 function sleep(d) {
 	if (!d) {
 		d = Math.random() * 1000 + 1000;
@@ -28,19 +30,21 @@ function start(){
 	chrome.tabs.create({"url" : url},page);
 }
 
-// chrome.tabs.create({"url" :"http://www.gsxt.gov.cn/index.html"});
 start();
 
 chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab) {
 		var link = changeInfo.url;
-		// alert(link);
 		if (link=="http://www.gsxt.gov.cn/corp-query-search-1.html"){
-			// chrome.tabs.executeScript(tabId,{file:"match.js"});
-			// sendMsg(tabId,"match","","中国工商银行股份有限公司");
-			// alert(tabId);
-			sendMsg(tabId,"match","","中国工商银行股份有限公司");
+			chrome.tabs.executeScript(tabId,{file:"match.js"});
 		}else if (link=="http://www.gsxt.gov.cn/index.html"){
-			alert(tabId);
 			sendMsg(tabId,"content","","中国工商银行股份有限公司");
-		};
+		}else if (detail_link and link==detail_link){
+			alert(tabId);
+		}
+});
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
+	if (request.link){
+		detail_link = request.link;
+	}
 });

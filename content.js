@@ -1,3 +1,11 @@
+var name
+function sleep(d) {
+	if (!d) {
+		d = Math.random() * 1000 + 1000;
+		// d = Math.random() * 1500;
+	}
+	for (var t = Date.now(); Date.now() - t <= d;);
+}
 
 function start(name){
 	$(document).ready(function(){
@@ -8,23 +16,19 @@ function start(name){
 	})
 }
 
-function getname(){
-  var h1s = document.getElementsByTagName("h1");
-  for (var i=0; i<h1s.length; i++){
-    alert(h1s[i].innerText);
-  }
-}
-
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	if (request.type=="content"){
-		start(request.name);
+		name = request.name;
+		start(name);
 		sendResponse("ok");
-	}else if(request.type=="match"){
-		alert(request);
-		sendResponse("0000000");
-	};
+	}
 });
-
-// chrome.tabs.onUpdated.addListener(function(tabId,changeInfo) {
-// 	alert("update")
+// chrome.extension.onConnect.addListener(function(port) {
+//   alert(port.name);
+//   port.onMessage.addListener(function(msg) {
+//     if (msg.type == "content"){
+//       start("中国工商银行股份有限公司");}
+//     else if (msg.type == "match"){
+//       alert("00000");}
+//   });
 // });
