@@ -1,5 +1,5 @@
 var detail_link
-
+var close_id
 function sleep(d) {
 	if (!d) {
 		d = Math.random() * 1000 + 1000;
@@ -35,6 +35,7 @@ start();
 chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab) {
 		var link = changeInfo.url;
 		if (link=="http://www.gsxt.gov.cn/corp-query-search-1.html"){
+			close_id = tabId;
 			chrome.tabs.executeScript(tabId,{file:"match.js"});
 		}else if (link=="http://www.gsxt.gov.cn/index.html"){
 			sendMsg(tabId,"content","","中国工商银行股份有限公司");
@@ -48,5 +49,9 @@ chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab) {
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	if (request.link){
 		detail_link = request.link;
+	}else if (request.status && close_id) {
+		alert(close_id);
+		chrome.tabs.remove(close_id);
+		sendResponse("ok");
 	}
 });

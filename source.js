@@ -10,6 +10,7 @@ function print(){
   setTimeout('document.getElementById("btn_print").click()',1000);
   // setTimeout('$("#btn_print").click()',1000);
   // setTimeout(function(){console.log('$("#btn_print").click()');},1000)
+  chrome.extension.sendMessage({status:"complete"},function(response){alert(response)});
 }
 
 print();
