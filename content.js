@@ -1,4 +1,5 @@
 var name
+
 function sleep(d) {
 	if (!d) {
 		d = Math.random() * 1000 + 1000;
@@ -23,12 +24,3 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 		sendResponse("ok");
 	}
 });
-// chrome.extension.onConnect.addListener(function(port) {
-//   alert(port.name);
-//   port.onMessage.addListener(function(msg) {
-//     if (msg.type == "content"){
-//       start("中国工商银行股份有限公司");}
-//     else if (msg.type == "match"){
-//       alert("00000");}
-//   });
-// });

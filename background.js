@@ -38,8 +38,10 @@ chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab) {
 			chrome.tabs.executeScript(tabId,{file:"match.js"});
 		}else if (link=="http://www.gsxt.gov.cn/index.html"){
 			sendMsg(tabId,"content","","中国工商银行股份有限公司");
-		}else if (detail_link and link==detail_link){
-			alert(tabId);
+		}else if (detail_link && link==detail_link){
+			// alert(tabId);
+			chrome.tabs.executeScript(tabId,{file:"jquery-2.0.0.min.js"});
+			chrome.tabs.executeScript(tabId,{file:"source.js"});
 		}
 });
 
