@@ -1,8 +1,10 @@
-// 最后的详情连接
-var detail_link
-// 关闭的标签id
-var close_id
+var detail_link                        // 最后的详情连接
+var close_id                           // 关闭的标签id
 var data_tab_id
+var serverdata
+
+
+
 // 休眠函数
 function sleep(d) {
 	if (!d) {
@@ -15,17 +17,17 @@ function sleep(d) {
 //发送消息函数
 function sendMsg(tabId, type, rule, name) {
 	sleep();
-	alert("开始通信");
+	// alert("开始通信");
 	chrome.tabs.sendMessage(tabId, {
 		type: type,
 		rule: rule,
 		name: name
-	},function(response){alert(response)});
+	},function(response){console.log(response)});
 }
 
 //回调函数,用于省略
 function page(tabs){
-	// alert("yes");
+	// alert(tabs.id)
 }
 
 //启动函数，用于创建标签（首页）
@@ -34,7 +36,43 @@ function start(){
 	chrome.tabs.create({"url" : url},page);
 }
 
-start();
+// 从服务器获取字段
+function getdata_from_server(){
+	// $.get("http://localhost:8080/api/two",function(data,status){
+	// 	alert(status);
+	// 	serverdata = data[0];
+	// 	// $.each(data,function(i,item){
+	// 	// 	alert(item);
+	// 	// });
+	// });
+	$.ajax({
+					url : 'http://localhost:8080/api/two',
+          // data:{name:value},
+          cache : false,
+          async : false,
+          type : "GET",
+          dataType : 'json/xml/html',
+          success : function (data,status){
+              alert(status);
+							serverdata = data[0];
+              }
+          });
+}
+
+chrome.browserAction.onClicked.addListener(function() {
+	getdata_from_server();
+	// while(true){
+	// 	if (serverdata){
+	// 		alert(serverdata);
+	// 		break;
+	// 	}
+	// }
+	start();
+});
+
+chrome.tabs.onCreated.addListener(function(tabs) {
+	sendMsg(tabs.id,"content","",'中国工商银行股份有限工商');
+});
 
 // 标签监听函数
 chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab) {
@@ -43,7 +81,7 @@ chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab) {
 			close_id = tabId;
 			chrome.tabs.executeScript(tabId,{file:"match.js"});
 		}else if (link=="http://www.gsxt.gov.cn/index.html"){
-			sendMsg(tabId,"content","","中国工商银行股份有限公司");
+			// sendMsg(tabId,"content","","中国工商银行股份有限公司");
 		}else if (detail_link && link==detail_link){
 			data_tab_id = tabId;
 			chrome.tabs.executeScript(tabId,{file:"jquery-2.0.0.min.js"});
@@ -64,16 +102,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 		sendResponse("ok");
 	}else if (request.data){
 		alert(request.data);
-		$.ajax({
-			type: "GET",
-			url: "http://localhost:5566/Service1.svc/GetTestList",
-			dataType: "json",
-			contenttype: "text/json; charset=utf-8",
-			async: false,
-			success:function(data){},
-			error: function (xhr, text, msg) {
-					alert(text);
-				}
+		$.get("http://localhost:8080/api/one?data="+request.data,function(data,status){
+			alert(status);
 		});
+		if (data_tab_id){
+			chrome.tabs.remove(data_tab_id);
+			sleep();
+			// start();
+		}
 	}
 });
