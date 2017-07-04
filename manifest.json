@@ -9,7 +9,8 @@
 		"webNavigation",
 		"webRequestBlocking",
 		"proxy",
-		"*://*/*",
+		"http://*/*",
+		"https://*/*",
 		"tabs",
 		"storage",
 		"unlimitedStorage"
@@ -18,7 +19,7 @@
     	"default_title":"crawerplug",
     	"default_icon": "image/icon.png"
   	},
-  "background":{"scripts":["background.js"]},
+  "background":{"scripts":["jquery-2.0.0.min.js","background.js"]},
   "content_scripts":[{
 		"matches":["http://www.gsxt.gov.cn/index.html"],
 		"js":["jquery-2.0.0.min.js" ,"content.js"]

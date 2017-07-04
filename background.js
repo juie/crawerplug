@@ -62,5 +62,18 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	}else if (request.status && close_id) {
 		chrome.tabs.remove(close_id);
 		sendResponse("ok");
+	}else if (request.data){
+		alert(request.data);
+		$.ajax({
+			type: "GET",
+			url: "http://localhost:5566/Service1.svc/GetTestList",
+			dataType: "json",
+			contenttype: "text/json; charset=utf-8",
+			async: false,
+			success:function(data){},
+			error: function (xhr, text, msg) {
+					alert(text);
+				}
+		});
 	}
 });
