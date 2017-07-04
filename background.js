@@ -1,5 +1,9 @@
+// 最后的详情连接
 var detail_link
+// 关闭的标签id
 var close_id
+var data_tab_id
+// 休眠函数
 function sleep(d) {
 	if (!d) {
 		d = Math.random() * 1000 + 1000;
@@ -32,6 +36,7 @@ function start(){
 
 start();
 
+// 标签监听函数
 chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab) {
 		var link = changeInfo.url;
 		if (link=="http://www.gsxt.gov.cn/corp-query-search-1.html"){
@@ -40,17 +45,21 @@ chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab) {
 		}else if (link=="http://www.gsxt.gov.cn/index.html"){
 			sendMsg(tabId,"content","","中国工商银行股份有限公司");
 		}else if (detail_link && link==detail_link){
-			// alert(tabId);
+			data_tab_id = tabId;
 			chrome.tabs.executeScript(tabId,{file:"jquery-2.0.0.min.js"});
 			chrome.tabs.executeScript(tabId,{file:"source.js"});
+		}else if (data_tab_id && tabId==data_tab_id && link){
+			chrome.tabs.executeScript(tabId,{file:"jquery-2.0.0.min.js"});
+			// chrome.tabs.sendMessage(tabId,{cmd:"fetch"},function(response){});
+			chrome.tabs.executeScript(tabId,{file:"fetch.js"})
 		}
 });
 
+// 消息监听函数
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	if (request.link){
 		detail_link = request.link;
 	}else if (request.status && close_id) {
-		alert(close_id);
 		chrome.tabs.remove(close_id);
 		sendResponse("ok");
 	}

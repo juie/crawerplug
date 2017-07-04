@@ -5,12 +5,24 @@ function sleep(d) {
 	}
 	for (var t = Date.now(); Date.now() - t <= d;);
 }
+function getpage(){
+	while(true){
+		var img = $(".print_img");
+		if (img.length>0){
+			alert("000000000");
+		}
+	}
+}
 
 function print(){
   setTimeout('document.getElementById("btn_print").click()',1000);
-  // setTimeout('$("#btn_print").click()',1000);
-  // setTimeout(function(){console.log('$("#btn_print").click()');},1000)
   chrome.extension.sendMessage({status:"complete"},function(response){alert(response)});
 }
 
 print();
+
+// chrome.extension.onMessage.addListener(function(request, sender, sendResponse){
+// 	if (request.cmd && request.cmd=="fetch"){
+// 		alert("yes");
+// 	}
+// });
