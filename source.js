@@ -16,7 +16,7 @@ function getpage(){
 
 function print(){
   setTimeout('document.getElementById("btn_print").click()',1000);
-  chrome.extension.sendMessage({status:"complete"},function(response){alert(response)});
+  chrome.extension.sendMessage({status:"complete"},function(response){console.log(response)});
 }
 
 print();

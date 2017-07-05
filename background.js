@@ -17,7 +17,6 @@ function sleep(d) {
 //发送消息函数
 function sendMsg(tabId, type, rule, name) {
 	sleep();
-	// alert("开始通信");
 	chrome.tabs.sendMessage(tabId, {
 		type: type,
 		rule: rule,
@@ -27,7 +26,6 @@ function sendMsg(tabId, type, rule, name) {
 
 //回调函数,用于省略
 function page(tabs){
-	// alert(tabs.id)
 }
 
 //启动函数，用于创建标签（首页）
@@ -37,41 +35,18 @@ function start(){
 }
 
 // 从服务器获取字段
-function getdata_from_server(){
-	// $.get("http://localhost:8080/api/two",function(data,status){
-	// 	alert(status);
-	// 	serverdata = data[0];
-	// 	// $.each(data,function(i,item){
-	// 	// 	alert(item);
-	// 	// });
-	// });
-	$.ajax({
-					url : 'http://localhost:8080/api/two',
-          // data:{name:value},
-          cache : false,
-          async : false,
-          type : "GET",
-          dataType : 'json/xml/html',
-          success : function (data,status){
-              alert(status);
-							serverdata = data[0];
-              }
-          });
+function getdata_from_server(tabId){
+	$.get("http://localhost:8080/api/two",function(data,status){
+		alert(data);
+		serverdata = data;
+		alert(serverdata);
+		sendMsg(tabId,"content","",serverdata);
+	});
 }
 
+//icon监听函数
 chrome.browserAction.onClicked.addListener(function() {
-	getdata_from_server();
-	// while(true){
-	// 	if (serverdata){
-	// 		alert(serverdata);
-	// 		break;
-	// 	}
-	// }
 	start();
-});
-
-chrome.tabs.onCreated.addListener(function(tabs) {
-	sendMsg(tabs.id,"content","",'中国工商银行股份有限工商');
 });
 
 // 标签监听函数
@@ -81,6 +56,7 @@ chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tab) {
 			close_id = tabId;
 			chrome.tabs.executeScript(tabId,{file:"match.js"});
 		}else if (link=="http://www.gsxt.gov.cn/index.html"){
+			getdata_from_server(tabId);
 			// sendMsg(tabId,"content","","中国工商银行股份有限公司");
 		}else if (detail_link && link==detail_link){
 			data_tab_id = tabId;
@@ -102,9 +78,20 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 		sendResponse("ok");
 	}else if (request.data){
 		alert(request.data);
-		$.get("http://localhost:8080/api/one?data="+request.data,function(data,status){
-			alert(status);
-		});
+		// $.get("http://localhost:8080/api/one?data="+request.data,function(data,status){
+			// alert(status);
+		// });
+		$.ajax({
+						url : 'http://localhost:8080/api/one',
+	          data:{data:request.data},
+	          cache : false,
+	          async : false,
+	          type : "POST",
+	          dataType : 'json/xml/html',
+	          success : function (data,status){
+	              console.log(status);
+	              }
+	          });
 		if (data_tab_id){
 			chrome.tabs.remove(data_tab_id);
 			sleep();
